@@ -64,3 +64,106 @@ steps, this means adjusting the temperature T. From equation 2.4 it is possible 
 not decreases is big but as it decreases the changes to higher energy states should be less probable. An important part of the simulated annealing algorithm is to choose
 a good way to low the temperature, this is known as annealing schedules.
 
+## Simulations 
+
+The sequences analyzed had a length of 25 monomers, regardless the sequence of amino acids there are 5768299665 possibilities of self avoiding walks of that length, and depending on the sequence each could have one or several energetic ground states. 
+
+Different cooling schedules were sed in one of the sequence to check how the performance of this algorithm changed with this variations. The simulations done were composed by two main parts. The folding of the proteins and the Metropolis algorithm within the simulated annealing. The code of the folding `pivot.py` was provided in the course website and it consisted of the following steps:
+
+1. Randomly select a pivot point *k*
+2. Select a random rotation or reflection.
+3. Apply the rotation on the *x_k* element and the subsequent sites *x_k+1* . . . *x_N*
+4. Check if the new state is self avoiding and keep it if it is.
+
+The program takes as arguments an initial protein sequence and its structure or in the case that it is nor provided a linear structure is supposed, then it can calls the method pivot which is the responsible of the folding following the steps described above.
+
+The program is called from a main program `proteins.py` where the sequence and structures (if needed) are defined, once a new chain was made we proceed to calculate its energy in order to apply the steps concerning to the Metropolis and simulated annealing algorithms the steps done were: Defining v(t) = v as the state of the system at a certain time then we have the next selection rules:
+
+* v(t + 1) = v' when ∆E_vv' ≤ 0
+
+and when ∆E_vv'  > 0
+
+![equation5](Images/eqn5.png)
+
+with x a random number between 0 and 1. This process was repeated 50 times for every thermal cooling, the energy of the protein was recorded at every thermal step and the results are saved in a text file for its later analysis. For every repetition of this cycles the minimum structure found was record and its energy too in another file.
+
+## Results
+
+5 different sequences of length 25 were analyzed, it was intended to find the structure on which each have their ground state. The sequences analyzed within its ground energy and degeneracy are shown in the table bellow.
+
+| Sequence      | E_ground      | Degeneracy  |
+| ------------- |:-------------:| -----:|
+| HHPHHPHPPHHPHPPHPPPHHPHPH      | -10 | 1  |
+| PHHHHPHHHPPPPPHHHPHHHPHHH      | -11 | 1  |
+| PHHHPPPHPPHHPHHPPPPPHPPHH      | -9  | 1  |
+| HPPHPHPHHHPPPPPHPHPHPHHPH      | -10 | 14 |
+| HPPPHPHPHPPHPPPHHHPPPHHPP      | -7  | 10 |
+
+Setting the simulation at a constant temperature the histograms of the sequences were obtained, to determine how was the energy probability distribution of them simulations with 70000 thermal steps and for each this process was repeated 50 times.
+
+![simulation1](Images/0.0_HPPHPHPHHHPPPPPHPHPHPHHPH_50000_1_sample.png)
+
+Energy as a function of time without simulated annealing
+
+
+![simulation2](Images/0.0_HPPHPHPHHHPPPPPHPHPHPHHPH_50000_energ_dist.png)
+
+Energy distribution for the first sequence. 
+
+### Analysis of different cooling schedules
+
+A point of interest was to look how the search for the ground energy state could be improved by applying this method and how it changed when different cooling schedules were used
+
+* T = T 0 /log(t + e)
+* T = T 0 − t(T 0 − 0.1)/t_max
+* T = T 0 (t − t_max + 1) 2 /t_max
+
+and a combination of the first and the second one in the form of
+
+![equation6](Images/eqn6.png)
+
+where *T_0* is the initial temperature, t is the time and *t_max* is the maximum simulation time. For each of the different cooling schedules the algorithm was run 20 times in simulations of 70000 thermal steps to see how many of this times it was possible to find the global minimum.
+
+![schedule_1](Images/1_HHPHHPHPPHHPHPPHPPPHHPHPH_linear50001coolin_sched.png)
+![energy_1](Images/1_HHPHHPHPPHHPHPPHPPPHHPHPH_linear50001_aver_ener.png)
+
+![schedule_2](Images/2_PHPPHPHPHHHHHPPHPHHPPH_minim_guess10000coolin_sched.png)
+![energy_2](Images/2_PHPPHPHPHHHHHPPHPHHPPH_minim_guess10000_aver_ener.png)
+
+![schedule_3](Images/3.01_HPPHPHPHHHPPPPPHPHPHPHHPH_100000coolin_sched.png)
+![energy_3](Images/3.01_HPPHPHPHHHPPPPPHPHPHPHHPH_100000_aver_ener.png)
+
+![schedule_4](Images/5.0_HHPHHPHPPHHPHPPHPPPHHPHPH_60000_pow_2coolin_sched.png)
+![energy_4](Images/5.0_HHPHHPHPPHHPHPPHPPPHHPHPH_60000_pow_2_aver_ener.png)
+
+Using the cooling schedule that showed a better performance, the ground state of the structures was searched. Some of the ground states found are shown in the figures bellow.
+
+Sequence: HHPHHPHPPHHPHPPHPPPHHPHPH
+
+![sequence1](Images/S_1.png)
+
+Sequence: PHHHHPHHHPPPPPHHHPHHHPHHH
+
+![sequence2](Images/s_2.png)
+
+
+
+Sequence: PHHHPPPHPPHHPHHPPPPPHPPHH
+
+![sequence2](Images/s_3.png)
+
+
+Squence: HPPHPHPHHHPPPPPHPHPHPHHPH
+
+![sequence3](Images/s4_1.png)
+![sequence4](Images/s4_2.png)
+![sequence5](Images/s4_3.png)
+![sequence6](Images/s4_4.png)
+
+
+Squence: HPPPHPHPHPPHPPPHHHPPPHHPP
+
+
+![sequence7](Images/s5_1.png)
+![sequence8](Images/s5_2.png)
+![sequence9](Images/s5_3.png)
